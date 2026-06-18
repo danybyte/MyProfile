@@ -3,9 +3,9 @@ const WORDS = ["Learning", "Browsing", "Coding", "Scrolling", "Reading", "Debugg
 export function MarqueeFooter() {
   const track = [...WORDS, ...WORDS];
   return (
-    <footer className="overflow-hidden bg-black text-white">
-      <div className="border-b border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-white/60">
+    <footer className="overflow-hidden bg-card text-card-foreground">
+      <div className="border-b border-border px-6 py-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           <span>© {new Date().getFullYear()} DanyByte</span>
           <span>Built while learning.</span>
         </div>
@@ -17,7 +17,7 @@ export function MarqueeFooter() {
               key={i}
               className="font-display text-[14vw] leading-none tracking-tight md:text-[10rem]"
             >
-              {w} <span className="text-white/30">·</span>
+              {w} <span className="text-primary">·</span>
             </span>
           ))}
         </div>

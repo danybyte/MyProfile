@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Personal profile for Daniel, also known as DanyByte, with channel links and live activity.",
       },
       { name: "author", content: "Daniel" },
-      { name: "theme-color", content: "#ffffff" },
+      { name: "theme-color", content: "#08090d" },
       { property: "og:title", content: "Daniel - DanyByte" },
       {
         property: "og:description",

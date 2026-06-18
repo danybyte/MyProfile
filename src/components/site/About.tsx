@@ -2,10 +2,12 @@ import { Reveal } from "./Reveal";
 
 export function About() {
   return (
-    <section id="about" className="border-b border-black/10 px-6 py-24 md:py-32">
+    <section id="about" className="border-b border-border px-6 py-24 md:py-32">
       <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-[1fr_2fr] md:gap-20">
         <Reveal>
-          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-black/60">About me</h2>
+          <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            About me
+          </h2>
         </Reveal>
         <div className="space-y-6 text-lg leading-relaxed md:text-xl">
           <Reveal delay={80}>
@@ -23,14 +25,14 @@ export function About() {
             </p>
           </Reveal>
           <Reveal delay={240}>
-            <dl className="mt-10 grid grid-cols-2 gap-px border border-black/10 bg-black/10 sm:grid-cols-3">
+            <dl className="mt-10 grid grid-cols-2 gap-px border border-border bg-border sm:grid-cols-3">
               {[
                 ["Born", "Sep 11, 2011"],
                 ["Started coding", "2023"],
                 ["First language", "Python"],
               ].map(([k, v]) => (
-                <div key={k} className="bg-white p-4">
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/50">
+                <div key={k} className="bg-card p-4">
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
                     {k}
                   </dt>
                   <dd className="mt-2 font-display text-base">{v}</dd>

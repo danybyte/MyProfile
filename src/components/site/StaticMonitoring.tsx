@@ -34,25 +34,25 @@ export function StaticMonitoring() {
   }, []);
 
   return (
-    <section id="monitoring" className="border-b border-black/10 px-6 py-24 md:py-32">
+    <section id="monitoring" className="border-b border-border px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="mb-12 flex items-end justify-between gap-4">
             <div>
-              <p className="font-mono text-xs uppercase tracking-[0.3em] text-black/60">
+              <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
                 Monitoring
               </p>
               <h2 className="mt-4 font-display text-4xl tracking-tight md:text-6xl">
                 Live signal.
               </h2>
             </div>
-            <p className="hidden max-w-xs text-sm text-black/60 md:block">
+            <p className="hidden max-w-xs text-sm text-muted-foreground md:block">
               Latest activity from across the channels, refreshed by GitHub Actions.
             </p>
           </div>
         </Reveal>
 
-        <div className="grid gap-px border border-black/10 bg-black/10 lg:grid-cols-3">
+        <div className="grid gap-px border border-border bg-border lg:grid-cols-3">
           <FeedColumn title="YouTube" sub="Latest videos">
             <FeedList items={feeds.youtube} empty="No videos to show yet." />
           </FeedColumn>
@@ -78,10 +78,10 @@ function FeedColumn({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white p-6 md:p-8">
-      <div className="mb-6 flex items-baseline justify-between border-b border-black/10 pb-4">
+    <div className="bg-card p-6 text-card-foreground md:p-8">
+      <div className="mb-6 flex items-baseline justify-between border-b border-border pb-4">
         <h3 className="font-display text-xl">{title}</h3>
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/50">
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
           {sub}
         </span>
       </div>
@@ -92,7 +92,7 @@ function FeedColumn({
 
 function FeedList({ items, empty }: { items: FeedItem[]; empty: string }) {
   if (!items.length) {
-    return <p className="font-mono text-xs text-black/50">{empty}</p>;
+    return <p className="font-mono text-xs text-muted-foreground">{empty}</p>;
   }
 
   return (
@@ -101,10 +101,10 @@ function FeedList({ items, empty }: { items: FeedItem[]; empty: string }) {
         const date = formatDate(item.timestamp);
         const content = (
           <>
-            <p className="line-clamp-2 font-display text-base leading-snug transition-colors group-hover:text-black/60">
+            <p className="line-clamp-2 font-display text-base leading-snug transition-colors group-hover:text-primary">
               {item.title}
             </p>
-            <p className="mt-2 flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-black/40">
+            <p className="mt-2 flex items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               <span>{item.meta}</span>
               {date ? <span>{date}</span> : null}
             </p>
@@ -118,12 +118,12 @@ function FeedList({ items, empty }: { items: FeedItem[]; empty: string }) {
                 href={item.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="group block border-b border-dashed border-black/10 pb-4 last:border-b-0"
+                className="group block border-b border-dashed border-border pb-4 last:border-b-0"
               >
                 {content}
               </a>
             ) : (
-              <div className="border-b border-dashed border-black/10 pb-4 last:border-b-0">
+              <div className="border-b border-dashed border-border pb-4 last:border-b-0">
                 {content}
               </div>
             )}

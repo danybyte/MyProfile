@@ -5,7 +5,7 @@ import { StaticMonitoring } from "@/components/site/StaticMonitoring";
 
 export function StaticApp() {
   return (
-    <main className="min-h-screen bg-white text-black antialiased">
+    <main className="min-h-screen bg-background text-foreground antialiased">
       <Hero />
       <About />
       <StaticMonitoring />
