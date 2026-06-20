@@ -3,6 +3,8 @@ import { cachedGithubActivity, cachedTelegramPosts, cachedYoutubeVideos } from "
 import type { FeedItem } from "./feed-types";
 
 const GITHUB_USER = "danybyte";
+const GITHUB_EVENTS_PER_PAGE = 30;
+const GITHUB_FEED_LIMIT = 5;
 const YT_CHANNELS = [
   { id: "UC5A4Wq8fmNG6d0BK_lSuN_g", label: "FA" }, // @theDanyByte
   { id: "UCcJPa01ovQs0xdKrV03g5EQ", label: "EN" }, // @DanyByteBug
@@ -83,7 +85,7 @@ export const getGithubActivity = createServerFn({ method: "GET" }).handler(
   async (): Promise<FeedItem[]> => {
     return withFeedCache("github", cachedGithubActivity, async () => {
       const res = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=10`,
+        `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=${GITHUB_EVENTS_PER_PAGE}`,
         {
           headers: {
             Accept: "application/vnd.github+json",
@@ -99,7 +101,7 @@ export const getGithubActivity = createServerFn({ method: "GET" }).handler(
         created_at: string;
         payload: GithubEventPayload;
       }>;
-      return compactGithubEvents(events).slice(0, 5);
+      return compactGithubEvents(events).slice(0, GITHUB_FEED_LIMIT);
     });
   },
 );
@@ -139,15 +141,8 @@ type GithubEvent = {
 
 function compactGithubEvents(events: GithubEvent[]): FeedItem[] {
   const items: FeedItem[] = [];
-  const pushedBranches = new Set<string>();
 
   for (const event of events) {
-    if (event.type === "PushEvent") {
-      const key = `${event.repo.name}:${branchName(event.payload.ref)}`;
-      if (pushedBranches.has(key)) continue;
-      pushedBranches.add(key);
-    }
-
     items.push({
       id: event.id,
       title: describeEvent(event.type, event.payload, event.repo.name),
@@ -168,7 +163,7 @@ function describeEvent(type: string, payload: GithubEventPayload, repo: string):
       const n = payload.commits?.length ?? payload.size ?? 0;
       const branch = branchName(payload.ref);
       if (n <= 0) return `Pushed to ${repoName} on ${branch}`;
-      return `Pushed ${n} commit${n === 1 ? "" : "s"} to ${repoName}`;
+      return `Pushed ${n} commit${n === 1 ? "" : "s"} to ${repoName} on ${branch}`;
     }
     case "PullRequestEvent":
       return `${cap(payload.action)} PR #${payload.pull_request?.number ?? ""} in ${repoName}`.trim();

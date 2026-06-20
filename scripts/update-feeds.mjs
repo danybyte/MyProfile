@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 const GITHUB_USER = "danybyte";
+const GITHUB_EVENTS_PER_PAGE = 30;
+const GITHUB_FEED_LIMIT = 5;
 const YT_CHANNELS = [
   { id: "UC5A4Wq8fmNG6d0BK_lSuN_g", label: "FA Channel" },
   { id: "UCcJPa01ovQs0xdKrV03g5EQ", label: "EN Channel" },
@@ -25,6 +27,27 @@ const cachedFeeds = {
       url: "https://github.com/danybyte/Prompter",
       timestamp: "2026-06-15T17:03:55Z",
       meta: "danybyte/Prompter · cached",
+    },
+    {
+      id: "13496829447",
+      title: "Pushed to MyProfile on main",
+      url: "https://github.com/danybyte/MyProfile",
+      timestamp: "2026-06-18T00:30:39Z",
+      meta: "danybyte/MyProfile",
+    },
+    {
+      id: "13496580231",
+      title: "Pushed to MyProfile on main",
+      url: "https://github.com/danybyte/MyProfile",
+      timestamp: "2026-06-18T00:21:47Z",
+      meta: "danybyte/MyProfile",
+    },
+    {
+      id: "13495855460",
+      title: "Pushed to MyProfile on main",
+      url: "https://github.com/danybyte/MyProfile",
+      timestamp: "2026-06-17T23:57:55Z",
+      meta: "danybyte/MyProfile",
     },
   ],
   youtube: [
@@ -115,30 +138,26 @@ async function fetchText(url, headers = {}) {
 }
 
 async function getGithubActivity() {
-  const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=10`, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "User-Agent": "danybyte-profile-site",
+  const res = await fetch(
+    `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=${GITHUB_EVENTS_PER_PAGE}`,
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+        "User-Agent": "danybyte-profile-site",
+      },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
     },
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
+  );
   if (!res.ok) throw new Error(`GitHub ${res.status}`);
 
   const events = await res.json();
-  return compactGithubEvents(events).slice(0, 5);
+  return compactGithubEvents(events).slice(0, GITHUB_FEED_LIMIT);
 }
 
 function compactGithubEvents(events) {
   const items = [];
-  const pushedBranches = new Set();
 
   for (const event of events) {
-    if (event.type === "PushEvent") {
-      const key = `${event.repo.name}:${branchName(event.payload.ref)}`;
-      if (pushedBranches.has(key)) continue;
-      pushedBranches.add(key);
-    }
-
     items.push({
       id: event.id,
       title: describeGithubEvent(event.type, event.payload, event.repo.name),
@@ -157,8 +176,9 @@ function describeGithubEvent(type, payload, repo) {
   switch (type) {
     case "PushEvent": {
       const n = payload.commits?.length ?? payload.size ?? 0;
-      if (n <= 0) return `Pushed to ${repoName} on ${branchName(payload.ref)}`;
-      return `Pushed ${n} commit${n === 1 ? "" : "s"} to ${repoName}`;
+      const branch = branchName(payload.ref);
+      if (n <= 0) return `Pushed to ${repoName} on ${branch}`;
+      return `Pushed ${n} commit${n === 1 ? "" : "s"} to ${repoName} on ${branch}`;
     }
     case "PullRequestEvent":
       return `${cap(payload.action)} PR #${payload.pull_request?.number ?? ""} in ${repoName}`.trim();

@@ -2,11 +2,32 @@ import { useState, type CSSProperties, type PointerEvent } from "react";
 import { Reveal } from "./Reveal";
 
 const LINKS = [
-  { label: "FA Channel", href: "https://www.youtube.com/@theDanyByte", kind: "YouTube" },
-  { label: "EN Channel", href: "https://www.youtube.com/@DanyByteBug", kind: "YouTube" },
-  { label: "GitHub", href: "https://github.com/danybyte", kind: "Code" },
-  { label: "Telegram", href: "https://t.me/DanyByteCH", kind: "Channel" },
-  { label: "X", href: "https://x.com/DanyByte11", kind: "Social" },
+  {
+    label: "FA Channel",
+    href: "https://www.youtube.com/@theDanyByte",
+    kind: "YouTube",
+    username: "theDanyByte",
+  },
+  {
+    label: "EN Channel",
+    href: "https://www.youtube.com/@DanyByteBug",
+    kind: "YouTube",
+    username: "DanyByteBug",
+  },
+  { label: "GitHub", href: "https://github.com/danybyte", kind: "Code", username: "danybyte" },
+  {
+    label: "Telegram",
+    href: "https://t.me/DanyByteCH",
+    kind: "Channel",
+    username: "DanyByteCH",
+  },
+  { label: "X", href: "https://x.com/DanyByte11", kind: "Social", username: "danybyte11" },
+  {
+    label: "Email",
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=thedanybyte@gmail.com",
+    kind: "Contact",
+    username: "thedanybyte@gmail.com",
+  },
 ];
 
 export function Hero() {
@@ -27,22 +48,27 @@ export function Hero() {
           </p>
         </Reveal>
         <Reveal delay={240}>
-          <ul className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-6">
             {LINKS.map((l) => (
               <li key={l.href} className="bg-card">
                 <a
                   href={l.href}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group flex h-full flex-col justify-between gap-6 p-5 transition-colors duration-300 hover:bg-primary hover:text-primary-foreground"
+                  className="group flex h-full flex-col justify-between gap-6 p-5 transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none"
                 >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-primary-foreground/70">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-primary-foreground/70 group-focus-visible:text-primary-foreground/70">
                     {l.kind}
                   </span>
-                  <span className="font-display text-xl">
-                    {l.label}
-                    <span className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1">
-                      ↗
+                  <span className="flex min-h-14 flex-col justify-end gap-1">
+                    <span className="font-display text-xl">
+                      {l.label}
+                      <span className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1">
+                        ↗
+                      </span>
+                    </span>
+                    <span className="truncate font-mono text-[11px] text-primary-foreground/75 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                      {l.username}
                     </span>
                   </span>
                 </a>
@@ -92,7 +118,7 @@ function HeroName() {
         />
         <span
           aria-hidden="true"
-          className={`hero-name__reveal pointer-events-none absolute inset-x-[0.16em] top-[0.08em] z-20 block whitespace-nowrap text-black transition-opacity duration-150 ${
+          className={`hero-name__reveal pointer-events-none absolute inset-0 z-20 block whitespace-nowrap px-[0.16em] py-[0.08em] text-black transition-opacity duration-150 ${
             spotlight.active ? "opacity-100" : "opacity-0"
           }`}
         >

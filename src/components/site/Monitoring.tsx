@@ -85,9 +85,12 @@ function FeedList({ items, empty }: { items: FeedItem[]; empty: string }) {
   if (!items.length) {
     return <p className="font-mono text-xs text-muted-foreground">{empty}</p>;
   }
+
+  const sortedItems = [...items].sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp));
+
   return (
     <ul className="space-y-4">
-      {items.map((item) => {
+      {sortedItems.map((item) => {
         const date = formatDate(item.timestamp);
         const titleClass = item.unavailable
           ? "line-clamp-2 font-display text-base leading-snug text-muted-foreground"
@@ -142,4 +145,9 @@ function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
   return d.toISOString().slice(0, 10);
+}
+
+function dateValue(iso: string): number {
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
 }

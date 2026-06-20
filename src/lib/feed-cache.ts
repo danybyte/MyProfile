@@ -15,6 +15,27 @@ export const cachedGithubActivity = [
     timestamp: "2026-06-15T17:03:55Z",
     meta: "danybyte/Prompter · cached",
   },
+  {
+    id: "13496829447",
+    title: "Pushed to MyProfile on main",
+    url: "https://github.com/danybyte/MyProfile",
+    timestamp: "2026-06-18T00:30:39Z",
+    meta: "danybyte/MyProfile",
+  },
+  {
+    id: "13496580231",
+    title: "Pushed to MyProfile on main",
+    url: "https://github.com/danybyte/MyProfile",
+    timestamp: "2026-06-18T00:21:47Z",
+    meta: "danybyte/MyProfile",
+  },
+  {
+    id: "13495855460",
+    title: "Pushed to MyProfile on main",
+    url: "https://github.com/danybyte/MyProfile",
+    timestamp: "2026-06-17T23:57:55Z",
+    meta: "danybyte/MyProfile",
+  },
 ] satisfies FeedItem[];
 
 export const cachedYoutubeVideos = [
