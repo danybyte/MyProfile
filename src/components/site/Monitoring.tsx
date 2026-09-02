@@ -6,7 +6,7 @@ import { Reveal } from "./Reveal";
 
 export function Monitoring() {
   return (
-    <section id="monitoring" className="border-b border-border px-6 py-24 md:py-32">
+    <section id="monitoring" className="snap-section border-b border-border px-6 py-24 md:py-32">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="mb-12 flex items-end justify-between gap-4">

@@ -25,6 +25,7 @@ async function withFeedCache(
   label: string,
   fallback: FeedItem[],
   load: () => Promise<FeedItem[]>,
+  limit: number,
 ): Promise<FeedItem[]> {
   const now = Date.now();
   const cached = feedCache.get(label);
@@ -32,7 +33,7 @@ async function withFeedCache(
 
   try {
     const items = await load();
-    const nextItems = items.length ? items : fallback;
+    const nextItems = topUpWithFallback(items, fallback, limit);
     feedCache.set(label, { items: nextItems, expiresAt: now + FEED_CACHE_MS });
     return nextItems;
   } catch (err) {
@@ -50,6 +51,20 @@ async function withFeedCache(
     });
     return items;
   }
+}
+
+function topUpWithFallback(items: FeedItem[], fallback: FeedItem[], limit: number): FeedItem[] {
+  if (items.length >= limit) return items.slice(0, limit);
+  const seen = new Set(items.map((item) => item.url ?? item.id));
+  const merged = [...items];
+  for (const item of fallback) {
+    if (merged.length >= limit) break;
+    const key = item.url ?? item.id;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(item);
+  }
+  return merged.sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp)).slice(0, limit);
 }
 
 async function fetchText(url: string, headers: HeadersInit = {}): Promise<string> {
@@ -83,26 +98,31 @@ async function firstNonEmpty(
 
 export const getGithubActivity = createServerFn({ method: "GET" }).handler(
   async (): Promise<FeedItem[]> => {
-    return withFeedCache("github", cachedGithubActivity, async () => {
-      const res = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=${GITHUB_EVENTS_PER_PAGE}`,
-        {
-          headers: {
-            Accept: "application/vnd.github+json",
-            "User-Agent": "danybyte-profile-site",
+    return withFeedCache(
+      "github",
+      cachedGithubActivity,
+      async () => {
+        const res = await fetch(
+          `https://api.github.com/users/${GITHUB_USER}/events/public?per_page=${GITHUB_EVENTS_PER_PAGE}`,
+          {
+            headers: {
+              Accept: "application/vnd.github+json",
+              "User-Agent": "danybyte-profile-site",
+            },
           },
-        },
-      );
-      if (!res.ok) throw new Error(`GitHub ${res.status}`);
-      const events = (await res.json()) as Array<{
-        id: string;
-        type: string;
-        repo: { name: string };
-        created_at: string;
-        payload: GithubEventPayload;
-      }>;
-      return compactGithubEvents(events).slice(0, GITHUB_FEED_LIMIT);
-    });
+        );
+        if (!res.ok) throw new Error(`GitHub ${res.status}`);
+        const events = (await res.json()) as Array<{
+          id: string;
+          type: string;
+          repo: { name: string };
+          created_at: string;
+          payload: GithubEventPayload;
+        }>;
+        return compactGithubEvents(events).slice(0, GITHUB_FEED_LIMIT);
+      },
+      GITHUB_FEED_LIMIT,
+    );
   },
 );
 
@@ -210,42 +230,50 @@ const cap = (s?: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "Updat
 
 export const getYoutubeVideos = createServerFn({ method: "GET" }).handler(
   async (): Promise<FeedItem[]> => {
-    return withFeedCache("youtube", cachedYoutubeVideos, async () => {
-      const channelItems = await Promise.allSettled(
-        YT_CHANNELS.map((ch) =>
-          firstNonEmpty(
-            [
-              async () =>
-                parseXmlFeed(
-                  await fetchText(`https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`, {
-                    "User-Agent": "Mozilla/5.0 DanyByteFeedReader",
-                  }),
-                  `${ch.label} Channel`,
-                  ch.id,
-                ),
-              async () =>
-                parseXmlFeed(
-                  await fetchText(`https://rsshub.app/youtube/channel/${ch.id}`),
-                  `${ch.label} Channel`,
-                  ch.id,
-                ),
-            ],
-            `youtube ${ch.label}`,
+    return withFeedCache(
+      "youtube",
+      cachedYoutubeVideos,
+      async () => {
+        const channelItems = await Promise.allSettled(
+          YT_CHANNELS.map((ch) =>
+            firstNonEmpty(
+              [
+                async () =>
+                  parseXmlFeed(
+                    await fetchText(
+                      `https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`,
+                      {
+                        "User-Agent": "Mozilla/5.0 DanyByteFeedReader",
+                      },
+                    ),
+                    `${ch.label} Channel`,
+                    ch.id,
+                  ),
+                async () =>
+                  parseXmlFeed(
+                    await fetchText(`https://rsshub.app/youtube/channel/${ch.id}`),
+                    `${ch.label} Channel`,
+                    ch.id,
+                  ),
+              ],
+              `youtube ${ch.label}`,
+            ),
           ),
-        ),
-      );
+        );
 
-      const all = channelItems
-        .filter(
-          (result): result is PromiseFulfilledResult<FeedItem[]> => result.status === "fulfilled",
-        )
-        .flatMap((result) => result.value);
+        const all = channelItems
+          .filter(
+            (result): result is PromiseFulfilledResult<FeedItem[]> => result.status === "fulfilled",
+          )
+          .flatMap((result) => result.value);
 
-      if (!all.length) throw new Error("No YouTube feed items found");
-      return dedupeByUrl(all)
-        .sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp))
-        .slice(0, 3);
-    });
+        if (!all.length) throw new Error("No YouTube feed items found");
+        return dedupeByUrl(all)
+          .sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp))
+          .slice(0, 3);
+      },
+      3,
+    );
   },
 );
 
@@ -326,27 +354,33 @@ function dateValue(iso: string): number {
 
 export const getTelegramPosts = createServerFn({ method: "GET" }).handler(
   async (): Promise<FeedItem[]> => {
-    return withFeedCache("telegram", cachedTelegramPosts, async () => {
-      return (
-        await firstNonEmpty(
-          [
-            async () =>
-              parseTelegramHtml(
-                await fetchText(`https://t.me/s/${TG_CHANNEL}`, {
-                  "User-Agent": "Mozilla/5.0 (compatible; DanyByteBot/1.0; +https://danybyte.dev)",
-                }),
-              ),
-            async () =>
-              parseXmlFeed(
-                await fetchText(`https://rsshub.app/telegram/channel/${TG_CHANNEL}`),
-                `@${TG_CHANNEL}`,
-                TG_CHANNEL,
-              ),
-          ],
-          "telegram",
-        )
-      ).slice(0, 3);
-    });
+    return withFeedCache(
+      "telegram",
+      cachedTelegramPosts,
+      async () => {
+        return (
+          await firstNonEmpty(
+            [
+              async () =>
+                parseTelegramHtml(
+                  await fetchText(`https://t.me/s/${TG_CHANNEL}`, {
+                    "User-Agent":
+                      "Mozilla/5.0 (compatible; DanyByteBot/1.0; +https://danybyte.dev)",
+                  }),
+                ),
+              async () =>
+                parseXmlFeed(
+                  await fetchText(`https://rsshub.app/telegram/channel/${TG_CHANNEL}`),
+                  `@${TG_CHANNEL}`,
+                  TG_CHANNEL,
+                ),
+            ],
+            "telegram",
+          )
+        ).slice(0, 3);
+      },
+      3,
+    );
   },
 );
 

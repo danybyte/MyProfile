@@ -101,9 +101,9 @@ const cachedFeeds = {
 
 async function main() {
   const [github, youtube, telegram] = await Promise.all([
-    safe(getGithubActivity(), cachedFeeds.github, "github"),
-    safe(getYoutubeVideos(), cachedFeeds.youtube, "youtube"),
-    safe(getTelegramPosts(), cachedFeeds.telegram, "telegram"),
+    safe(getGithubActivity(), cachedFeeds.github, "github", 5),
+    safe(getYoutubeVideos(), cachedFeeds.youtube, "youtube", 3),
+    safe(getTelegramPosts(), cachedFeeds.telegram, "telegram", 3),
   ]);
 
   const feeds = {
@@ -118,14 +118,28 @@ async function main() {
   console.log(`Wrote ${OUT_FILE.pathname}`);
 }
 
-async function safe(promise, fallback, label) {
+async function safe(promise, fallback, label, limit) {
   try {
     const items = await promise;
-    return items.length ? items : fallback;
+    return topUp(items, fallback, limit);
   } catch (error) {
     console.warn(`[feeds] ${label} failed; using cache.`, error?.message ?? error);
     return fallback;
   }
+}
+
+function topUp(items, fallback, limit) {
+  if (items.length >= limit) return items.slice(0, limit);
+  const seen = new Set(items.map((item) => item.url ?? item.id));
+  const merged = [...items];
+  for (const item of fallback) {
+    if (merged.length >= limit) break;
+    const key = item.url ?? item.id;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(item);
+  }
+  return merged.sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp)).slice(0, limit);
 }
 
 async function fetchText(url, headers = {}) {
@@ -238,7 +252,7 @@ async function getTelegramPosts() {
 
   return parseTelegramHtml(html)
     .sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp))
-    .slice(0, 3);
+    .slice(0, 10);
 }
 
 function parseXmlFeed(xml, meta, idPrefix) {

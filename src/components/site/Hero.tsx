@@ -33,7 +33,7 @@ const LINKS = [
 
 export function Hero() {
   return (
-    <section className="border-b border-border px-6 pt-24 pb-20 md:pt-32 md:pb-28">
+    <section className="snap-section border-b border-border px-6 pt-24 pb-20 md:pt-32 md:pb-28">
       <div className="mx-auto max-w-5xl">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">

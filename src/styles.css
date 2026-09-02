@@ -97,4 +97,13 @@
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y proximity;
+    }
+    .snap-section {
+      scroll-snap-align: start;
+    }
+  }
 }
