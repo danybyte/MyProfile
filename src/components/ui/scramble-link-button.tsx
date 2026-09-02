@@ -12,6 +12,10 @@ const GLYPHS = "!<>-_\\/[]{}=+*^?#";
 const TICK_MS = 30;
 const TICKS_TOTAL = 22;
 
+function canHover() {
+  return typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
+}
+
 type ScrambleLinkButtonProps = {
   btnText: string;
   href?: string;
@@ -92,10 +96,10 @@ export default function ScrambleLinkButton({
     <a
       href={href ?? "#"}
       onClick={onClick}
-      onMouseEnter={startScramble}
-      onMouseLeave={stopScramble}
-      onFocus={startScramble}
-      onBlur={stopScramble}
+      onMouseEnter={canHover() ? startScramble : undefined}
+      onMouseLeave={canHover() ? stopScramble : undefined}
+      onFocus={canHover() ? startScramble : undefined}
+      onBlur={canHover() ? stopScramble : undefined}
       className={cn(
         "group/scramble relative inline-flex flex-col overflow-hidden focus-visible:outline-none",
         className,

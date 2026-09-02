@@ -89,7 +89,7 @@ function HeroName() {
   } as CSSProperties;
 
   return (
-    <h1 className="mt-6 font-display text-[14vw] leading-[0.9] tracking-tight md:text-[9rem]">
+    <h1 className="mt-6 font-display text-[16vw] leading-[0.9] tracking-tight sm:text-[14vw] md:text-[9rem]">
       <span
         className="hero-name group relative -mx-[0.16em] inline-block max-w-full select-none px-[0.16em] py-[0.08em]"
         style={spotlightStyle}
