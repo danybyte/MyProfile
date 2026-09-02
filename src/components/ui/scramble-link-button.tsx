@@ -5,13 +5,12 @@ import {
   useState,
   type CSSProperties,
   type MouseEventHandler,
-  type ReactNode,
 } from "react";
 import { cn } from "@/lib/utils";
 
-const GLYPHS = "!<>-_\\/[]{}—=+*^?#________";
+const GLYPHS = "!<>-_\\/[]{}=+*^?#";
 const TICK_MS = 30;
-const CHARS_PER_TICK = 3;
+const TICKS_TOTAL = 22;
 
 type ScrambleLinkButtonProps = {
   btnText: string;
@@ -54,13 +53,13 @@ export default function ScrambleLinkButton({
     let tick = 0;
     timerRef.current = window.setInterval(() => {
       tick += 1;
-      const revealed = tick * CHARS_PER_TICK;
-      if (revealed >= btnText.length) {
+      if (tick >= TICKS_TOTAL) {
         if (timerRef.current !== null) window.clearInterval(timerRef.current);
         timerRef.current = null;
         setText(btnText);
         return;
       }
+      const revealed = Math.floor((tick / TICKS_TOTAL) * btnText.length);
       setText(
         btnText
           .split("")
@@ -98,7 +97,7 @@ export default function ScrambleLinkButton({
       onFocus={startScramble}
       onBlur={stopScramble}
       className={cn(
-        "group/scramble relative inline-flex flex-col focus-visible:outline-none",
+        "group/scramble relative inline-flex flex-col overflow-hidden focus-visible:outline-none",
         className,
       )}
       style={hoverColor ? ({ "--scramble-color": hoverColor } as CSSProperties) : undefined}
@@ -111,8 +110,8 @@ export default function ScrambleLinkButton({
         </span>
       ) : null}
       <span className="flex min-h-14 w-full flex-col justify-end gap-1">
-        <span className="flex items-baseline gap-1 font-display text-xl">
-          <span className="transition-colors duration-300 group-hover/scramble:text-[var(--scramble-color,inherit)]">
+        <span className="flex items-baseline gap-1 whitespace-nowrap font-display text-xl">
+          <span className="overflow-hidden whitespace-nowrap transition-colors duration-300 group-hover/scramble:text-[var(--scramble-color,inherit)]">
             {text}
           </span>
           {showArrow ? (
