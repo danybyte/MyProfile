@@ -2,10 +2,7 @@ import { Reveal } from "./Reveal";
 
 export function About() {
   return (
-    <section
-      id="about"
-      className="snap-section min-h-svh border-b border-border px-6 py-24 md:py-32"
-    >
+    <section id="about" className="snap-section border-b border-border px-6 py-24 md:py-32">
       <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-[1fr_2fr] md:gap-20">
         <Reveal>
           <h2 className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">

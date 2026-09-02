@@ -105,8 +105,5 @@
     .snap-section {
       scroll-snap-align: start;
     }
-    .snap-section-end {
-      scroll-snap-align: end;
-    }
   }
 }
