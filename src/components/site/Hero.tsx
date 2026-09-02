@@ -1,4 +1,5 @@
 import { useState, type CSSProperties, type PointerEvent } from "react";
+import ScrambleLinkButton from "@/components/ui/scramble-link-button";
 import { Reveal } from "./Reveal";
 
 const LINKS = [
@@ -51,27 +52,16 @@ export function Hero() {
           <ul className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-6">
             {LINKS.map((l) => (
               <li key={l.href} className="bg-card">
-                <a
+                <ScrambleLinkButton
+                  btnText={l.label}
                   href={l.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="group flex h-full flex-col justify-between gap-6 p-5 transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none"
-                >
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-primary-foreground/70 group-focus-visible:text-primary-foreground/70">
-                    {l.kind}
-                  </span>
-                  <span className="flex min-h-14 flex-col justify-end gap-1">
-                    <span className="font-display text-xl">
-                      {l.label}
-                      <span className="ml-1 inline-block transition-transform duration-300 group-hover:translate-x-1 group-focus-visible:translate-x-1">
-                        ↗
-                      </span>
-                    </span>
-                    <span className="truncate font-mono text-[11px] text-primary-foreground/75 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
-                      {l.username}
-                    </span>
-                  </span>
-                </a>
+                  hoverColor="#8be9d4"
+                  showLine
+                  showArrow
+                  eyebrow={l.kind}
+                  caption={l.username}
+                  className="flex h-full w-full flex-col justify-between gap-6 p-5"
+                />
               </li>
             ))}
           </ul>
