@@ -61,13 +61,6 @@ export const cachedYoutubeVideos = [
     meta: "FA Channel · cached",
   },
   {
-    id: "youtube-cache-hYsP5foKG4g",
-    title: "Found the best AI for coding🤖",
-    url: "https://www.youtube.com/watch?v=hYsP5foKG4g",
-    timestamp: "2025-12-21T13:31:53+00:00",
-    meta: "EN Channel · cached",
-  },
-  {
     id: "youtube-cache-kWpaluJsSb8",
     title: "قسمت اول Bit Learn | فعالیت من در گیت هاب + استفاده حرفه ای از هوش مصنوعی",
     url: "https://www.youtube.com/watch?v=kWpaluJsSb8",

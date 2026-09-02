@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T20:04:53.127Z",
+  "generatedAt": "2026-09-02T20:43:03.449Z",
   "github": [
     {
       "id": "14167217982",
@@ -60,18 +60,18 @@
       "meta": "FA Channel"
     },
     {
-      "id": "yt:video:hYsP5foKG4g",
-      "title": "Found the best AI for coding🤖",
-      "url": "https://www.youtube.com/watch?v=hYsP5foKG4g",
-      "timestamp": "2025-12-21T13:31:53+00:00",
-      "meta": "EN Channel"
-    },
-    {
       "id": "yt:video:XBoUWUzeagM",
       "title": "Stop Coding with the wrong AI! 🛑 ChatGPT vs Gemini vs Grok",
       "url": "https://www.youtube.com/watch?v=XBoUWUzeagM",
       "timestamp": "2025-12-20T21:56:10+00:00",
       "meta": "EN Channel"
+    },
+    {
+      "id": "yt:video:jPZXeBixsFM",
+      "title": "داستان این پنگوئن و سازندش Linux",
+      "url": "https://www.youtube.com/watch?v=jPZXeBixsFM",
+      "timestamp": "2025-12-18T06:10:47+00:00",
+      "meta": "FA Channel"
     }
   ],
   "telegram": [
