@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T19:54:53.070Z",
+  "generatedAt": "2026-09-02T20:04:53.127Z",
   "github": [
     {
       "id": "14167217982",
@@ -58,6 +58,20 @@
       "url": "https://www.youtube.com/watch?v=kWpaluJsSb8",
       "timestamp": "2026-02-20T18:31:31+00:00",
       "meta": "FA Channel"
+    },
+    {
+      "id": "yt:video:hYsP5foKG4g",
+      "title": "Found the best AI for coding🤖",
+      "url": "https://www.youtube.com/watch?v=hYsP5foKG4g",
+      "timestamp": "2025-12-21T13:31:53+00:00",
+      "meta": "EN Channel"
+    },
+    {
+      "id": "yt:video:XBoUWUzeagM",
+      "title": "Stop Coding with the wrong AI! 🛑 ChatGPT vs Gemini vs Grok",
+      "url": "https://www.youtube.com/watch?v=XBoUWUzeagM",
+      "timestamp": "2025-12-20T21:56:10+00:00",
+      "meta": "EN Channel"
     }
   ],
   "telegram": [
@@ -80,6 +94,20 @@
       "title": "https://youtu.be/R3wtMbq2S3U",
       "url": "https://t.me/DanyByteCH/188",
       "timestamp": "2026-08-28T19:34:03+00:00",
+      "meta": "@DanyByteCH"
+    },
+    {
+      "id": "DanyByteCH/187",
+      "title": "متاسفانه چون توی ادیت هم کندم هم سخت گیر، تازه ۱۰ دقیقه از ویدیو ادیت شده ولی از ویدیو راضیم",
+      "url": "https://t.me/DanyByteCH/187",
+      "timestamp": "2026-08-26T23:43:08+00:00",
+      "meta": "@DanyByteCH"
+    },
+    {
+      "id": "DanyByteCH/185",
+      "title": "نیاز مندی های ویدیو بعدی",
+      "url": "https://t.me/DanyByteCH/185",
+      "timestamp": "2026-08-19T21:40:24+00:00",
       "meta": "@DanyByteCH"
     }
   ]

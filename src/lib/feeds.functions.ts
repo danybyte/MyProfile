@@ -270,9 +270,9 @@ export const getYoutubeVideos = createServerFn({ method: "GET" }).handler(
         if (!all.length) throw new Error("No YouTube feed items found");
         return dedupeByUrl(all)
           .sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp))
-          .slice(0, 3);
+          .slice(0, 5);
       },
-      3,
+      5,
     );
   },
 );
@@ -377,9 +377,9 @@ export const getTelegramPosts = createServerFn({ method: "GET" }).handler(
             ],
             "telegram",
           )
-        ).slice(0, 3);
+        ).slice(0, 5);
       },
-      3,
+      5,
     );
   },
 );

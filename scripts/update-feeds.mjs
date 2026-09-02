@@ -52,11 +52,32 @@ const cachedFeeds = {
   ],
   youtube: [
     {
+      id: "youtube-cache-R3wtMbq2S3U",
+      title: "جنگو بلد نبودم ولی باهاش یک سایت ساختم!",
+      url: "https://www.youtube.com/watch?v=R3wtMbq2S3U",
+      timestamp: "2026-08-28T19:25:10+00:00",
+      meta: "FA Channel · cached",
+    },
+    {
+      id: "youtube-cache-XBoUWUzeagM",
+      title: "Stop Coding with the wrong AI! 🛑 ChatGPT vs Gemini vs Grok",
+      url: "https://www.youtube.com/watch?v=XBoUWUzeagM",
+      timestamp: "2025-12-20T21:56:10+00:00",
+      meta: "EN Channel · cached",
+    },
+    {
       id: "youtube-cache-pdznwcR6_14",
       title: "پرامپت معمولی ننویس! معرفی پروژه متن‌باز Prompter",
       url: "https://www.youtube.com/watch?v=pdznwcR6_14",
       timestamp: "2026-06-15T23:38:14+00:00",
       meta: "FA Channel · cached",
+    },
+    {
+      id: "youtube-cache-hYsP5foKG4g",
+      title: "Found the best AI for coding🤖",
+      url: "https://www.youtube.com/watch?v=hYsP5foKG4g",
+      timestamp: "2025-12-21T13:31:53+00:00",
+      meta: "EN Channel · cached",
     },
     {
       id: "youtube-cache-kWpaluJsSb8",
@@ -65,35 +86,42 @@ const cachedFeeds = {
       timestamp: "2026-02-20T18:31:31+00:00",
       meta: "FA Channel · cached",
     },
-    {
-      id: "youtube-cache-hYsP5foKG4g",
-      title: "Found the best AI for coding🤖",
-      url: "https://www.youtube.com/shorts/hYsP5foKG4g",
-      timestamp: "2025-12-21T13:31:53+00:00",
-      meta: "EN Channel · cached",
-    },
   ],
   telegram: [
     {
-      id: "telegram-cache-159",
-      title: "هی یادم میره این داره کار میکنه vpnرو خاموش میکنم 😂 😂",
-      url: "https://t.me/DanyByteCH/159",
-      timestamp: "2026-06-17T18:22:12+00:00",
+      id: "DanyByteCH/190",
+      title: "عادیه همچین چیزی؟ 😂",
+      url: "https://t.me/DanyByteCH/190",
+      timestamp: "2026-08-30T18:38:11+00:00",
       meta: "@DanyByteCH · cached",
     },
     {
-      id: "telegram-cache-158",
+      id: "DanyByteCH/189",
+      title: "بالاخره",
+      url: "https://t.me/DanyByteCH/189",
+      timestamp: "2026-08-28T19:34:24+00:00",
+      meta: "@DanyByteCH · cached",
+    },
+    {
+      id: "DanyByteCH/188",
+      title: "ویدیوی جدید: جنگو بلد نبودم ولی باهاش یک سایت ساختم!",
+      url: "https://t.me/DanyByteCH/188",
+      timestamp: "2026-08-28T19:34:03+00:00",
+      meta: "@DanyByteCH · cached",
+    },
+    {
+      id: "DanyByteCH/187",
       title:
-        "بلاخره بعد مدت ها با codex دارم کار میکنم با API freemodel.devکه هم API claude میده و هم codex.",
-      url: "https://t.me/DanyByteCH/158",
-      timestamp: "2026-06-17T18:20:28+00:00",
+        "متاسفانه چون توی ادیت هم کندم هم سخت گیر، تازه ۱۰ دقیقه از ویدیو ادیت شده ولی از ویدیو راضیم",
+      url: "https://t.me/DanyByteCH/187",
+      timestamp: "2026-08-26T23:43:08+00:00",
       meta: "@DanyByteCH · cached",
     },
     {
-      id: "telegram-cache-152",
-      title: "واقعا پشیمون نیستما اصلا چون برای من open sourceعه و میتونه خیلی بزرگتر بشه.",
-      url: "https://t.me/DanyByteCH/152",
-      timestamp: "2026-06-16T21:23:10+00:00",
+      id: "DanyByteCH/185",
+      title: "نیاز مندی های ویدیو بعدی",
+      url: "https://t.me/DanyByteCH/185",
+      timestamp: "2026-08-19T21:40:24+00:00",
       meta: "@DanyByteCH · cached",
     },
   ],
@@ -102,8 +130,8 @@ const cachedFeeds = {
 async function main() {
   const [github, youtube, telegram] = await Promise.all([
     safe(getGithubActivity(), cachedFeeds.github, "github", 5),
-    safe(getYoutubeVideos(), cachedFeeds.youtube, "youtube", 3),
-    safe(getTelegramPosts(), cachedFeeds.telegram, "telegram", 3),
+    safe(getYoutubeVideos(), cachedFeeds.youtube, "youtube", 5),
+    safe(getTelegramPosts(), cachedFeeds.telegram, "telegram", 5),
   ]);
 
   const feeds = {
@@ -242,7 +270,7 @@ async function getYoutubeVideos() {
 
   return dedupeByUrl(all)
     .sort((a, b) => dateValue(b.timestamp) - dateValue(a.timestamp))
-    .slice(0, 3);
+    .slice(0, 5);
 }
 
 async function getTelegramPosts() {
