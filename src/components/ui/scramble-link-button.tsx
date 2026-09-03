@@ -18,6 +18,7 @@ function canHover() {
 
 type ScrambleLinkButtonProps = {
   btnText: string;
+  hoverText?: string;
   href?: string;
   hoverColor?: string;
   showLine?: boolean;
@@ -31,6 +32,7 @@ type ScrambleLinkButtonProps = {
 
 export default function ScrambleLinkButton({
   btnText,
+  hoverText,
   href,
   hoverColor,
   showLine = false,
@@ -42,46 +44,59 @@ export default function ScrambleLinkButton({
   onClick,
 }: ScrambleLinkButtonProps) {
   const [text, setText] = useState(btnText);
+  const [hovered, setHovered] = useState(false);
+  const textRef = useRef(btnText);
   const timerRef = useRef<number | null>(null);
 
-  const stopScramble = useCallback(() => {
-    if (timerRef.current !== null) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    setText(btnText);
-  }, [btnText]);
+  const updateText = useCallback((value: string) => {
+    textRef.current = value;
+    setText(value);
+  }, []);
+
+  const scrambleTo = useCallback(
+    (target: string) => {
+      if (timerRef.current !== null) window.clearInterval(timerRef.current);
+      const source = textRef.current;
+      let tick = 0;
+      timerRef.current = window.setInterval(() => {
+        tick += 1;
+        if (tick >= TICKS_TOTAL) {
+          if (timerRef.current !== null) window.clearInterval(timerRef.current);
+          timerRef.current = null;
+          updateText(target);
+          return;
+        }
+        const revealed = Math.floor((tick / TICKS_TOTAL) * target.length);
+        updateText(
+          target
+            .split("")
+            .map((char, index) => {
+              if (index < revealed) return char;
+              if (char === " ") return " ";
+              return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            })
+            .join(""),
+        );
+      }, TICK_MS);
+    },
+    [updateText],
+  );
 
   const startScramble = useCallback(() => {
-    if (timerRef.current !== null) window.clearInterval(timerRef.current);
-    let tick = 0;
-    timerRef.current = window.setInterval(() => {
-      tick += 1;
-      if (tick >= TICKS_TOTAL) {
-        if (timerRef.current !== null) window.clearInterval(timerRef.current);
-        timerRef.current = null;
-        setText(btnText);
-        return;
-      }
-      const revealed = Math.floor((tick / TICKS_TOTAL) * btnText.length);
-      setText(
-        btnText
-          .split("")
-          .map((char, index) => {
-            if (index < revealed) return char;
-            if (char === " ") return " ";
-            return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-          })
-          .join(""),
-      );
-    }, TICK_MS);
-  }, [btnText]);
+    setHovered(true);
+    scrambleTo(hoverText ?? btnText);
+  }, [hoverText, btnText, scrambleTo]);
+
+  const stopScramble = useCallback(() => {
+    setHovered(false);
+    scrambleTo(btnText);
+  }, [btnText, scrambleTo]);
 
   useEffect(() => {
     if (timerRef.current !== null) window.clearInterval(timerRef.current);
     timerRef.current = null;
-    setText(btnText);
-  }, [btnText]);
+    updateText(btnText);
+  }, [btnText, updateText]);
 
   useEffect(
     () => () => {
@@ -115,7 +130,12 @@ export default function ScrambleLinkButton({
       ) : null}
       <span className="flex min-h-14 w-full flex-col justify-end gap-1">
         <span className="flex items-baseline gap-1 whitespace-nowrap font-display text-xl">
-          <span className="overflow-hidden whitespace-nowrap transition-colors duration-300 group-hover/scramble:text-[var(--scramble-color,inherit)]">
+          <span
+            className={cn(
+              "overflow-hidden whitespace-nowrap transition-[color,font-size] duration-300 group-hover/scramble:text-[var(--scramble-color,inherit)]",
+              hovered && hoverText ? "font-mono text-xs tracking-tight" : "",
+            )}
+          >
             {text}
           </span>
           {showArrow ? (
@@ -128,7 +148,12 @@ export default function ScrambleLinkButton({
           ) : null}
         </span>
         {caption ? (
-          <span className="truncate font-mono text-[11px] text-muted-foreground opacity-0 transition-opacity duration-300 group-hover/scramble:opacity-100">
+          <span
+            className={cn(
+              "truncate font-mono text-[11px] text-muted-foreground transition-opacity duration-300",
+              hovered ? "opacity-0" : "opacity-0 group-hover/scramble:opacity-100",
+            )}
+          >
             {caption}
           </span>
         ) : null}

@@ -27,7 +27,7 @@ const LINKS = [
     label: "Email",
     href: "https://mail.google.com/mail/?view=cm&fs=1&to=thedanybyte@gmail.com",
     kind: "Contact",
-    username: "thedanybyte@gmail.com",
+    username: "thedanybyte",
   },
 ];
 
@@ -54,12 +54,12 @@ export function Hero() {
               <li key={l.href} className="bg-card">
                 <ScrambleLinkButton
                   btnText={l.label}
+                  hoverText={l.username}
                   href={l.href}
                   hoverColor="#8be9d4"
                   showLine
                   showArrow
                   eyebrow={l.kind}
-                  caption={l.username}
                   className="flex h-full w-full flex-col justify-between gap-6 p-5"
                 />
               </li>
